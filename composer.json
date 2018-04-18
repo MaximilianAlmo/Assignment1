@@ -1,0 +1,10 @@
+{
+    "name": "mau/assignment1",
+    "description": "Packages for assignment1",
+    "type": "project",
+    "require": {
+        "monolog/monolog": "^1.23",
+        "guzzlehttp/guzzle": "^6.3"
+    },
+    "license": "BSD"
+}
