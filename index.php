@@ -51,33 +51,44 @@ $data = json_decode($res->getBody(), true);
 	    <p>
 			<?php 
 				 
-				$getID = $_GET['id'];
+				$getID = isset($_GET['id']) ? true : null;
 				print "<hr>";
-				
 				
 				// Om användaren ser alla hästar
 				if($getID == null){		
 					$log->info("Info om alla hestar");
 					print "<h3>Här hittar du alla fina hestar.</h3>" .
 						"<br>";
-								
-					for ($i=0; $i < count($data); $i++) {
-						print "<p>" . ($data[$i]['id']) . "&nbsp" . $data[$i]['name'];
-						print "<a href='index.php?id=".$data[$i]['id'] ."' class='btn btn-info' style='float: right' role='button'> Mer info här! </a>";
+					
+					foreach($data as $data){
+						print "<p>" . $data['id'] . ".&nbsp&nbsp&nbsp" . $data['name'];
+						print "<a href='index.php?id=".$data['id'] ."' class='btn btn-info' style='float: right' role='button'> Mer info här! </a>";
 						print "</p>";
 						print "<hr>";
-					  }
+					}		
 				}
 				// Om användaren har klickat in på en häst
 				else if($getID >= 1){
-					$log->info("Info om hesten:" .$data[$getID - 1]['name']);
+					
+					$log->info("Info om hesten: " .$data[$_GET['id']-1]['name']);
+					
+					$page = "http://unicorns.idioti.se/" . $_GET['id'];
+					
+					$res = $client->request('GET', $page, ['headers' => ['Accept' => 'application/json']]);
 
-					$horse = file_get_contents('http://unicorns.idioti.se/' . $_GET['id']);
-					print $horse;
+					// header("Content-type: application/json; charset=UTF-8");
+					// Omvandla JSON-svar till datatyper
+					$data = json_decode($res->getBody(), true);
+					
+					print "<h1>" . $data['name'] . "</h1>";
+					print "<p>" . $data['spottedWhen'] . "</p>";
+					print "<p>" . $data['description'] . "</p>";
+					print "<p><b>Rapporterad av:</b> " . $data['reportedBy'] . "</p>";
+					print "<img src='" . $data['image'] ."'>";
 
 				}
 				else{
-					$log->info("Hesten hittade inte");
+					$log->info("Hesten hittades inte");
 					print "<h4> Hesten du letar efter finns inte! </h4>";
 				}
 				
